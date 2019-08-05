@@ -1,0 +1,3 @@
+rootProject.name = 'springboot_react_example'
+include 'frontend'
+include 'backend'
