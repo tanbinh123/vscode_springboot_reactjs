@@ -1,0 +1,48 @@
+plugins {
+    id 'org.springframework.boot' version '2.1.6.RELEASE'
+    id 'java'
+    id 'eclipse'
+    id 'war'
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+group = 'idv.springboot.react.example'
+version = 'Stage'
+sourceCompatibility = '1.8'
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+   	 extendsFrom developmentOnly
+    }
+    compileOnly {
+   	 extendsFrom annotationProcessor
+    }
+    implementation.exclude(group:"org.springframework.boot",module:"spring-boot-starter-tomcat")
+    implementation.exclude(group:"javax.validation",module:"validation-api")
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'javax.servlet:javax.servlet-api'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.projectlombok:lombok'
+    providedRuntime 'org.springframework.boot:spring-boot-starter-undertow'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+if(project.hasProperty("production")) {
+    tasks.withType(Jar) {
+   	 dependsOn ':frontend:npm_run_build'
+   	 from("../frontend/build") {
+   			 into("WEB-INF/classes/static")
+   		 }
+    }
+}
